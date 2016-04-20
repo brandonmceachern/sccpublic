@@ -1,0 +1,162 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\citation-events-list/citation-events-list.html">
+<link rel="import" href="..\citation-events-data/citation-events-data.html">
+<link rel="import" href="..\..\bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="..\..\bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="..\citation-data/citation-data.html">
+
+<dom-module id="citation-events-view">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .loading {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+      }
+      paper-progress {
+        --paper-progress-active-color: var(--light-accent-color);
+      }
+      .text-large {
+        font-size: 125%;
+        font-weight: bold;
+        padding: 5px;
+      }
+      .field-name {
+        color: var(--disabled-text-color);
+        text-decoration: underline;
+      }
+      .citation-header {
+        border: groove;
+      }
+      .citation-title {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+      }
+      .citation-title-phone {
+        font-size: 115%;
+        font-weight: bold;
+        text-align: center;
+      }
+    </style>
+    <citation-data cidno="{{cidno}}" citation="{{citation}}"></citation-data>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{phone}}"></iron-media-query>
+    <citation-events-data citationeventsres-list="{{citationeventList}}" cidno="{{cidno}}" loading="{{loading}}"></citation-events-data>
+    <template is="dom-if" if="{{loading}}">
+      <div class="layout horizontal">
+        <paper-progress indeterminate class="flex-1"></paper-progress>
+      </div>
+      <div class="layout horizontal">
+        <div class="loading flex-1">LOADING</div>
+      </div>
+    </template>
+    <template is="dom-if" if="{{!loading}}">
+      <!--DESKTOP MODE-->
+      <template is="dom-if" if="{{!phone}}">
+        <div class="citation-header">
+          <div class="layout vertical">
+            <div class="citation-title">{{citation.0.Description}}</div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Citation Number</div>
+              <div class="flex-1 self-center text-large">{{citation.0.CITATIONSUMMONS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Docket Number</div>
+              <div class="flex-1 self-center text-large">{{citation.0.DOCKETNO}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Violation Code</div>
+              <div class="flex-1 self-center text-large">{{citation.0.VIOLATIONCODE}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Case Status</div>
+              <div class="flex-1 self-center text-large">{{citation.0.CASESTATUS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Adjusted Fine and Cost</div>
+              <div class="flex-1 self-center text-large">$ {{citation.0.ADJUSTEDFINEANDCOSTS}}</div>
+            </div>
+          </div>
+        </div>
+      </template>
+     <!-- PHONE MODE-->
+      <template is="dom-if" if="{{phone}}">
+        <div class="citation-header">
+          <div class="layout vertical">
+            <div class="citation-title-phone">{{citation.0.Description}}</div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Citation Number</div>
+              <div class="flex-1 self-center text-large">{{citation.0.CITATIONSUMMONS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Docket Number</div>
+              <div class="flex-1 self-center text-large">{{citation.0.DOCKETNO}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Violation Code</div>
+              <div class="flex-1 self-center text-large">{{citation.0.VIOLATIONCODE}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Case Status</div>
+              <div class="flex-1 self-center text-large">{{citation.0.CASESTATUS}}</div>
+            </div>
+          </div>
+          <div class="layout vertical flex-1">
+            <div class="flex-1 self-center field-name">Adjusted Fine and Cost</div>
+            <div class="flex-1 self-center text-large">$ {{citation.0.ADJUSTEDFINEANDCOSTS}}</div>
+          </div>
+        </div>
+      </template>
+      <div class="layout vertical">
+        <div class="text-large self-center">Citation Events</div>
+      </div>
+      <citation-events-list citationevent-list="{{citationeventList}}"></citation-events-list>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'citation-events-view',
+
+      properties: {
+        citationeventList: {
+          type: Array,
+          notify: true
+        },
+        citation: {
+          type: Array,
+          notify: true
+        },
+        cidno: {
+          type: Number,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

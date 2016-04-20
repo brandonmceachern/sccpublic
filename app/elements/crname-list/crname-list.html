@@ -1,0 +1,209 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="..\clarion-date-converter/clarion-date-converter.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="..\..\bower_components/iron-media-query/iron-media-query.html">
+
+<dom-module id="crname-list">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      #profilepic {
+        width: 150px;
+        height: 100px;
+      }
+
+      .card-container {
+        padding: 10px;
+      }
+      .button-padding {
+        padding: 5px;
+      }
+      .text-large {
+        font-size: 110%;
+        font-weight: bolder;
+        text-align: center;
+        padding: 5px;
+      }
+
+      .birthdate {
+        font-size: 105%;
+        font-weight: bold;
+      }
+      .cases-button {
+        background-color: var(--accent-color);
+      }
+      .cases-button:hover {
+        background-color: var(--light-accent-color);
+      }
+      a {
+        text-decoration: none;
+      }
+      a:link {color: var(--primary-text-color)}
+      a:visited {color: var(--disabled-text-color)}
+
+    </style>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{phone}}"></iron-media-query>
+    <template is="dom-if" if="{{!phone}}">
+      <div class="layout horizontal wrap">
+        <template is="dom-repeat" items="{{crnameList}}" as="person">
+          <div class="card-container flex-1">
+            <paper-card>
+              <div class="layout vertical card-content">
+                <div class="flex-1">
+                  <div class="text-large flex-1">{{person.FIRSTNAMEMI}} {{person.LASTNAME}}</div>
+                </div>
+                <div class="layout horizontal">
+                  <div class="layout vertical flex-5 wrap self-end">
+                    <div class="birthdate"><clarion-date-converter clarion-date="{{person.BIRTHDATE}}"></clarion-date-converter></div>
+                    <div>{{person.STREET1}}</div>
+                    <div>{{person.CITY}}, {{person.STATE}} {{person.ZIP}}</div>
+
+                  </div>
+                  <iron-image id="profilepic"
+                              src="{{computePic(person.SEX)}}"
+                              style="background-color:{{computeRace(person.RACE)}};"
+                              class="image flex-3"
+                              sizing="cover"></iron-image>
+                </div>
+                <div class="layout horizontal card-container card-actions">
+                  <div class="button-padding">
+                    <paper-card class="flex-1">
+                      <div class="cases-button button-padding">
+                        <a href$="{{baseUrl}}/criminal/{{person.IDNO}}">CASES</a>
+                      </div>
+                    </paper-card>
+                  </div>
+                  <div class="button-padding">
+                    <paper-card class="flex-2">
+                      <div class="cases-button button-padding">
+                        <a href$="{{baseUrl}}/courtdate/{{person.IDNO}}">COURT DATES</a>
+                      </div>
+                    </paper-card>
+                  </div>
+                </div>
+              </div>
+            </paper-card>
+          </div>
+        </template>
+    </template>
+    <template is="dom-if" if="{{phone}}">
+      <div class="layout vertical">
+        <template is="dom-repeat" items="{{crnameList}}" as="person">
+          <div class="layout horizontal card-container">
+            <paper-card class="flex-1">
+              <div class="layout vertical card-content">
+                <div class="flex-1">
+                  <div class="text-large flex-1">{{person.FIRSTNAMEMI}} {{person.LASTNAME}}</div>
+                </div>
+                <div class="layout horizontal">
+                  <div class="layout vertical flex-5 wrap self-end">
+                    <div class="birthdate"><clarion-date-converter clarion-date="{{person.BIRTHDATE}}"></clarion-date-converter></div>
+                    <div>{{person.STREET1}} {{baseUrl}}</div>
+                    <div>{{person.CITY}}, {{person.STATE}} {{person.ZIP}}</div>
+                  </div>
+                  <iron-image src="{{computePic(person.SEX)}}"
+                              style="background-color:{{computeRace(person.RACE)}};"
+                              class="image flex-1"
+                              sizing="contain"></iron-image>
+                </div>
+                <div class="layout horizontal card-container card-actions">
+                  <div class="button-padding">
+                    <paper-card class="flex-1">
+                      <div class="cases-button button-padding">
+                        <a href$="{{baseUrl}}/criminal/{{person.IDNO}}">CASES</a>
+                      </div>
+                    </paper-card>
+                  </div>
+                  <div class="button-padding">
+                    <paper-card class="flex-2">
+                      <div class="cases-button button-padding">
+                        <a href$="{{baseUrl}}/courtdate/{{person.IDNO}}">COURT DATES</a>
+                      </div>
+                    </paper-card>
+                  </div>
+                </div>
+              </div>
+            </paper-card>
+          </div>
+        </template>
+    </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'crname-list',
+
+      properties: {
+        crnameList: {
+          type: Array,
+          notify: true
+        },
+        phone: {
+          type: Boolean,
+          notify: true
+        }
+      },
+
+      computePic: function(sex){
+        var path = '';
+        switch (sex){
+          case 'M':
+            path = '../../images/profile/Male.png';
+            break;
+          case 'F':
+            path = '../../images/profile/Female.png';
+            break;
+          case 'R':
+            path = '../../images/profile/Mickey.png';
+            break;
+          default:
+            path = '../../images/profile/Female.png';
+            break;
+        }
+        return path;
+      },
+
+      computeRace: function(race) {
+        var raceColor = '#ffcc99';
+        switch(race){
+          case 'W':
+            raceColor = '#ffcc99';
+            break;
+          case 'B':
+            raceColor = '#663300';
+            break;
+          case 'A':
+            raceColor = '#ff9933';
+            break;
+          case 'O':
+            raceColor = '#ff9933';
+            break;
+          case 'U':
+            raceColor = '';
+            break;
+          default:
+            raceColor = '';
+            break;
+        }
+        return raceColor;
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

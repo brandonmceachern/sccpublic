@@ -1,0 +1,62 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/paper-card/paper-card.html">
+<link rel="import" href="..\..\bower_components/paper-input/paper-input.html">
+<link rel="import" href="..\..\bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+
+<dom-module id="search-name">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .search-fields {
+        padding: 10px;
+      }
+    </style>
+    <div class="layout horizontal">
+      <div class="search-fields flex-1">
+        <paper-card class="layout horizontal">
+          <paper-input class="search-fields flex-1"
+                       value="{{firstName}}"
+                       placeholder="First Name"></paper-input>
+        </paper-card>
+      </div>
+      <div class="search-fields flex-1">
+        <paper-card class="layout horizontal">
+          <paper-input class="search-fields flex-1"
+                       label="For Mc last names use a space."
+                       value="{{lastName}}"
+                       alwaysFloatLabel
+                        placeholder="Last Name"></paper-input>
+        </paper-card>
+      </div>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'search-name',
+
+      properties: {
+        firstName: {
+          type: String,
+          notify: true
+        },
+        lastName: {
+          type: String,
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

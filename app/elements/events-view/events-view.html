@@ -1,0 +1,69 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\events-data/events-data.html">
+<link rel="import" href="..\events-list/events-list.html">
+
+<dom-module id="events-view">
+  <template>
+    <style>
+      .no-cases {
+        border: outset;
+        border-color: var(--dark-primary-color);
+        padding: 50px;
+        text-align: center;
+      }
+    </style>
+    <events-data eventsres-list="{{eventList}}"
+                 idno="{{idno}}"
+                 loading="{{loading}}"></events-data>
+
+    <template is="dom-if" if="{{!eventList.length}}">
+      <div class="layout center-center">
+        <div class="self-center">
+          <div class="no-cases">Currently no upcoming court dates exist for this individual.</div>
+        </div>
+      </div>
+    </template>
+    <template is="dom-if" if="{{eventList.length}}">
+      <events-list event-list="{{eventList}}"></events-list>
+    </template>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'events-view',
+
+      properties: {
+        eventList: {
+          type: Array,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          notify: true
+        },
+        phone: {
+          type: Boolean,
+          notify: true
+        },
+        idno: {
+          type: Number,
+          notify: true
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

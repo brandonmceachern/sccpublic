@@ -1,0 +1,125 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="..\clarion-date-converter/clarion-date-converter.html">
+<link rel="import" href="..\..\bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="..\..\bower_components/paper-progress/paper-progress.html">
+
+
+<dom-module id="idno-view">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .loading {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+      }
+      .text-large {
+        font-size: 150%;
+        font-weight: bold;
+        padding: 5px;
+      }
+      .text-details {
+        padding: 10px;
+      }
+      .field-name {
+        color: var(--disabled-text-color);
+      }
+      .section-title {
+        font-size: 125%;
+        border-bottom: groove;
+        text-align: center;
+        padding: 10px;
+      }
+      paper-progress {
+        --paper-progress-active-color: var(--light-accent-color);
+      }
+      .no-cases {
+        border: outset;
+        border-color: var(--dark-primary-color);
+        padding: 50px;
+        text-align: center;
+      }
+    </style>
+    <idno-data idnores-list="{{idnoList}}" idno="{{idno}}" loading="{{loading}}"></idno-data>
+    <template is="dom-if" if="{{!idnoList.length}}">
+      <div class="layout center-center">
+        <div class="self-center">
+          <div class="no-cases">Currently no cases exist for this individual.</div>
+        </div>
+      </div>
+    </template>
+    <template is="dom-if" if="{{idnoList.length}}">
+      <template is="dom-if" if="{{loading}}">
+        <div class="layout horizontal">
+          <paper-progress indeterminate class="flex-1"></paper-progress>
+        </div>
+        <div class="layout horizontal">
+          <div class="loading flex-1">LOADING</div>
+        </div>
+      </template>
+      <template is="dom-if" if="{{!loading}}">
+        <div class="layout vertical">
+          <div class="self-start text-large">
+            <span>{{idnoList.0.FIRSTNAMEMI}} {{idnoList.0.LASTNAME}}</span>
+          </div>
+          <div class="layout horizontal">
+            <div class="self-start text-details">
+              {{idnoList.0.STREET1}}<br>
+              {{idnoList.0.CITY}}, {{idnoList.0.STATE}} {{idnoList.0.ZIP}}
+            </div>
+            <div class="self-end text-details">
+              <div class="field-name">Date of Birth <br></div>
+              <clarion-date-converter clarion-date="{{idnoList.0.BIRTHDATE}}"></clarion-date-converter>
+            </div>
+          </div>
+          <div class="text-details">
+            Download PDF<paper-icon-button  icon="file-download" on-tap="idnodownloadPDF"></paper-icon-button>
+          </div>
+          <div class="self-center self-stretch section-title">
+            Cases
+          </div>
+        </div>
+        <idno-list idno-list="{{idnoList}}"></idno-list>
+      </template>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'idno-view',
+
+      properties: {
+        idno: {
+          type: Number,
+          notify: true
+        },
+        idnoList: {
+          type: Array,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          notify: true
+        }
+      },
+
+      idnodownloadPDF: function(){
+        var url = 'http://cos13380:3000/api/crname/print/idno/' + this.idno;
+        window.open(url);
+      }
+    });
+  })();
+  </script>
+</dom-module>

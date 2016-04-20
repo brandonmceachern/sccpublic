@@ -1,0 +1,64 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+
+<dom-module id="clarion-date-converter">
+  <template>
+    <style>
+    </style>
+    <span>{{convertedDate}}</span>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'clarion-date-converter',
+      properties: {
+        clarionDate: {
+          type: String,
+          notify: true
+        },
+        convertedDate: {
+          type: String,
+          notify: true,
+          computed: 'convertClarion(clarionDate)'
+        },
+        juliunDate: {
+          type: Date,
+          notify: true
+        }
+      },
+
+      convertClarion: function(clarionDate) {
+        if (clarionDate > 0){
+          var convertedDate = clarionDate - 61729;
+          convertedDate = convertedDate * 86400 * 1000;
+          var juliunDate = new Date(convertedDate);
+          this.juliunDate = juliunDate;
+          var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+          ];
+          var day = juliunDate.getDate();
+          var monthIndex = juliunDate.getMonth();
+          var year = juliunDate.getFullYear();
+          return monthNames[monthIndex] + ' ' + day + ' ' + year;
+        } else {
+          return "Date Unknown";
+        };
+      }
+    });
+  })();
+  </script>
+</dom-module>

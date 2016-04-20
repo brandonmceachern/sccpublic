@@ -1,0 +1,210 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\cidno-data/cidno-data.html">
+<link rel="import" href="..\cidno-list/cidno-list.html">
+<link rel="import" href="..\clarion-date-converter/clarion-date-converter.html">
+<link rel="import" href="..\..\bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="..\..\bower_components/iron-media-query/iron-media-query.html">
+
+<dom-module id="cidno-view">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .loading {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+      }
+      paper-progress {
+        --paper-progress-active-color: var(--light-accent-color);
+      }
+      .text-large {
+        font-size: 125%;
+        font-weight: bold;
+        padding: 5px;
+      }
+      .field-name {
+        color: var(--disabled-text-color);
+        text-decoration: underline;
+      }
+      .citation-header {
+        border: groove;
+      }
+      .citation-title {
+        font-size: 150%;
+        font-weight: bold;
+        text-align: center;
+      }
+      .chronology {
+        border-bottom: groove;
+        text-align: center;
+        font-size: 125%;
+        font-weight: bold;
+        padding-top: 10px;
+      }
+    </style>
+    <cidno-data cidnores-list="{{cidnoList}}"
+                cidno="{{cidno}}"
+                loading="{{loading}}"></cidno-data>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{phone}}"></iron-media-query>
+
+    <template is="dom-if" if="{{loading}}">
+      <div class="layout horizontal">
+        <paper-progress indeterminate class="flex-1"></paper-progress>
+      </div>
+      <div class="layout horizontal">
+        <div class="loading flex-1">LOADING</div>
+      </div>
+    </template>
+    <template is="dom-if" if="{{!loading}}">
+      <template is="dom-if" if="{{!phone}}">
+        <div class="layout horizontal">
+          <div class="flex-1 self-start">
+            Download PDF
+            <paper-icon-button  class="flex-1 self-start" id="pdfDownload" icon="file-download" on-tap="downloadPDF"></paper-icon-button>
+          </div>
+
+        </div>
+        <div class="citation-header">
+          <div class="layout vertical">
+            <div class="citation-title">{{cidnoList.0.VIOLATE_Description}}</div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Citation Number</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.CITATIONSUMMONS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Docket Number</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.DOCKETNO}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Violation Code</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.VIOLATIONCODE}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Case Status</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.CASESTATUS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Adjusted Fine and Cost</div>
+              <div class="flex-1 self-center text-large">$ {{cidnoList.0.ADJUSTEDFINEANDCOSTS}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Date of Incident</div>
+              <div class="flex-1 self-center text-large">
+                <clarion-date-converter clarion-date="{{cidnoList.0.Crcase_DATEOCCURRED}}"></clarion-date-converter>
+              </div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Case Disposition</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.CASEDISPOSITION}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="flex-1 self-center field-name">Defendant Pleading</div>
+              <div class="flex-1 self-center text-large">{{cidnoList.0.DEFENDANTPLEADING}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="chronology">Chronology</div>
+        <cidno-list cidno-list="{{cidnoList}}"></cidno-list>
+      </template>
+      <template is="dom-if" if="{{phone}}">
+        <div class="layout vertical">
+          <div class="citation-title flex-1">{{cidnoList.0.VIOLATE_Description}}</div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="field-name self-center">Citation Number</div>
+              <div class="flex-1 self-center">{{cidnoList.0.CITATIONSUMMONS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="field-name flex-1 self-center">Docket Number</div>
+              <div class="flex-1 self-center">{{cidnoList.0.DOCKETNO}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="field-name self-center">Violation Code</div>
+              <div class="flex-1 self-center">{{cidnoList.0.VIOLATIONCODE}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="field-name flex-1 self-center">Case Status</div>
+              <div class="flex-1 self-center">{{cidnoList.0.CASESTATUS}}</div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="field-name self-center">Adjusted Fine and Cost</div>
+              <div class="flex-1 self-center">{{cidnoList.0.ADJUSTEDFINEANDCOSTS}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="field-name flex-1 self-center">Date of Incident</div>
+              <div class="flex-1 self-center">
+                <clarion-date-converter clarion-date="{{cidnoList.0.DATEOCCURRED}}"></clarion-date-converter>
+              </div>
+            </div>
+          </div>
+          <div class="layout horizontal">
+            <div class="layout vertical flex-1">
+              <div class="field-name self-center">Case Disposition</div>
+              <div class="flex-1 self-center">{{cidnoList.0.CASEDISPOSITION}}</div>
+            </div>
+            <div class="layout vertical flex-1">
+              <div class="field-name flex-1 self-center">Defendant Pleading</div>
+              <div class="flex-1 self-center">{{cidnoList.0.DEFENDANTPLEADING}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="chronology">Chronology</div>
+        <cidno-list cidno-list="{{cidnoList}}"></cidno-list>
+      </template>
+    </template>
+    </template>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'cidno-view',
+
+      properties: {
+        cidnoList: {
+          type: Array,
+          notify: true
+        },
+        loading: {
+          type: Boolean,
+          notify: true
+        },
+        phone: {
+          type: Boolean,
+          notify: true
+        },
+        cidno: {
+          type: Number,
+          notify: true
+        }
+      },
+
+      downloadPDF: function(){
+        var url = 'http://cos13380:3000/api/crname/print/chrono/cidno/' + this.cidno;
+        window.open(url);
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

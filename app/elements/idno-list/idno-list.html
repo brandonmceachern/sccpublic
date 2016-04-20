@@ -1,0 +1,193 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="..\clarion-date-converter/clarion-date-converter.html">
+<link rel="import" href="..\..\bower_components/paper-card/paper-card.html">
+<link rel="import" href="..\..\bower_components/paper-button/paper-button.html">
+<link rel="import" href="..\..\bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="..\..\bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="idno-list">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .citation-list {
+        padding-top: 10px;
+      }
+      .citation-heading {
+        font-size: 115%;
+        font-weight: bold;
+      }
+      .date-occurred {
+        font-size: 105%;
+      }
+      .citation-details {
+        border: groove;
+        padding: 10px;
+      }
+      .field-name {
+        color: var(--disabled-text-color);
+      }
+      .padding {
+        padding: 10px;
+      }
+      .citation-button {
+        background-color: var(--accent-color);
+        padding: 10px;
+      }
+      .citation-button:hover {
+        background-color: var(--light-accent-color);
+      }
+      a {
+        text-decoration: none;
+      }
+      a:link {color: var(--primary-text-color)}
+      a:visited {color: var(--disabled-text-color)}
+      a {
+        text-decoration: none;
+      }
+
+    </style>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{phone}}"></iron-media-query>
+    <div class="layout vertical citation-list">
+      <template is="dom-repeat" items="{{idnoList}}" as="case">
+        <div class="layout horizontal citation-list">
+          <paper-card class="flex-1">
+            <div class="card-content">
+              <div class="layout horizontal">
+                <div class="self-start flex-1 layout vertical">
+                  <div class="flex-3 date-occurred"><clarion-date-converter clarion-date="{{case.DATEOCCURRED}}"></clarion-date-converter></div>
+                  <div class="flex-5 citation-heading">{{case.Description}}</div>
+                </div>
+
+              </div>
+
+              <!--Desktop view-->
+              <template is="dom-if" if="{{!phone}}">
+                <div class="citation-details">
+                  <div class="layout horizontal wrap">
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name"> Citation </div>
+                      <div class="self-center"> {{case.CITATIONSUMMONS}} </div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name"> Docket Number </div>
+                      <div class="self-center"> {{case.DOCKETNO}} </div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name"> Violation Code </div>
+                      <div class="self-center"> {{case.VIOLATE_ViolationCode}} </div>
+                    </div>
+                    <div class="flex-2 layout vertical">
+                      <div class="self-center field-name"> Adjusted Fine and Cost </div>
+                      <div class="self-center">$ {{case.ADJUSTEDFINEANDCOSTS}} </div>
+                    </div>
+                    <div class="flex-3 layout vertical">
+                      <div class="self-center field-name"> Case Disposition </div>
+                      <div class="self-center"> {{case.CASEDISPOSITION}} </div>
+                    </div>
+                    <div class="flex-2 layout vertical">
+                      <div class="self-center field-name"> Defendant Pleading </div>
+                      <div class="self-center"> {{case.DEFENDANTPLEADING}} </div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name"> Case Status</div>
+                      <div class="self-center"> {{case.CASESTATUS}} </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template is="dom-if" if="{{phone}}">
+                <div class="citation-details">
+                  <div class="layout vertical">
+                    <div class="layout horizontal center-justified">
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Citation </div>
+                        <div class="self-center"> {{case.CITATIONSUMMONS}} </div>
+                      </div>
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Docket Number </div>
+                        <div class="self-center"> {{case.DOCKETNO}} </div>
+                      </div>
+                    </div>
+                    <div class="layout horizontal center-justified">
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Violation Code </div>
+                        <div class="self-center"> {{case.VIOLATE_ViolationCode}} </div>
+                      </div>
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name">Fine and Cost</div>
+                        <div class="self-center">$ {{case.ADJUSTEDFINEANDCOSTS}} </div>
+                      </div>
+                    </div>
+                    <div class="layout horizontal center-justified">
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Case Disposition </div>
+                        <div class="self-center"> {{case.CASEDISPOSITION}} </div>
+                      </div>
+                    </div>
+                    <div class="layout horizontal center-justified">
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Defendant Pleading </div>
+                        <div class="self-center"> {{case.DEFENDANTPLEADING}} </div>
+                      </div>
+                      <div class="layout vertical flex-1">
+                        <div class="self-center field-name"> Case Status</div>
+                        <div class="self-center"> {{case.CASESTATUS}} </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+            <div class="card-actions padding">
+               <paper-card class="citation-button">
+                 <div>
+                   <div class="flex-1">
+                     <a href$="{{baseUrl}}/citation/{{case.CIDNO}}">DETAILS</a>
+                   </div>
+                 </div>
+               </paper-card>
+              <paper-card class="citation-button">
+                <div>
+                  <div class="flex-1">
+                    <a href$="{{baseUrl}}/citationevents/{{case.CIDNO}}">EVENTS</a>
+                  </div>
+                </div>
+              </paper-card>
+            </div>
+          </paper-card>
+        </div>
+
+      </template>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'idno-list',
+
+      properties: {
+        idnoList: {
+          type: Array,
+          notify: true
+        },
+        phone: {
+          type: Boolean
+        }
+      },
+
+    });
+  })();
+  </script>
+</dom-module>

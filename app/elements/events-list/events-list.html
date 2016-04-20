@@ -1,0 +1,158 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\clarion-date-converter/clarion-date-converter.html">
+<link rel="import" href="..\..\bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="..\..\bower_components/paper-card/paper-card.html">
+<link rel="import" href="..\..\bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="..\eidno-list/eidno-list.html">
+
+<dom-module id="events-list">
+  <template>
+    <style is="custom-style" include="iron-flex iron-flex-alignment iron-flex-factors">
+      .field-name {
+        color: var(--disabled-text-color);
+        text-decoration: underline;
+      }
+      .padding {
+        padding-left: 10px;
+      }
+      .citation-details {
+        border: groove;
+        padding: 10px;
+      }
+    </style>
+    <iron-media-query query="(max-width: 600px)" query-matches="{{phone}}"></iron-media-query>
+    <div class="layout vertical padding">
+      <h1 class="flex-1 self-center">Upcoming Court Dates</h1>
+      <div>{{eventList.0.FIRSTNAMEMI}} {{eventList.0.LASTNAME}}</div>
+      <div>{{eventList.0.STREET1}}</div>
+      <div>{{eventList.0.CITY}}, {{eventList.0.STATE}} {{eventList.ZIP}}</div>
+    </div>
+    <div class="layout vertical">
+      <template is="dom-repeat" items="{{eventList}}" as="event" sort="_sortDates">
+        <div class="layout vertical">
+          <paper-card class="flex-1">
+            <div class="card-content">
+              <!--Desktop view-->
+              <template is="dom-if" if="{{!phone}}">
+                <div class="citation-details">
+                  <div class="layout horizontal wrap">
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name"> Date </div>
+                      <div class="self-center">
+                        <div class="layout horizontal">
+                          <clarion-date-converter clarion-date="{{event.DATESCHEDULED}}"></clarion-date-converter>
+                          <div class="padding">{{event.AMORPM}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name">Type of Docket</div>
+                      <div class="self-center">{{typeOfDocket(event.TYPEOFDOCKET)}}</div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name">Judge</div>
+                      <div class="self-center">{{event.JudgeFullName}}</div>
+                    </div>
+                    <div class="flex-1 layout vertical">
+                      <div class="self-center field-name">Event</div>
+                      <div class="self-center">{{event.EVENT}}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template is="dom-if" if="{{phone}}">
+                <div class="citation-details">
+                  <div class="layout vertical">
+                    <div class="layout vertical">
+                      <div class="self-center field-name"> Date </div>
+                      <div class="self-center">
+                        <div class="layout horizontal">
+                          <clarion-date-converter clarion-date="{{event.DATESCHEDULED}}"></clarion-date-converter>
+                          <div class="padding">{{event.AMORPM}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="layout vertical">
+                      <div class="self-center field-name">Type of Docket</div>
+                      <div class="self-center">{{typeOfDocket(event.TYPEOFDOCKET)}}</div>
+                    </div>
+                    <div class="layout vertical">
+                      <div class="self-center field-name">Judge</div>
+                      <div class="self-center">{{event.JudgeFullName}}</div>
+                    </div>
+                    <div class="layout vertical">
+                      <div class="self-center field-name">Event</div>
+                      <div class="self-center">{{event.EVENT}}</div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </paper-card>
+        </div>
+      </template>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'events-list',
+
+      properties: {
+        eventList: {
+          type: Array,
+          notify: true
+        },
+        phone: {
+          type: Boolean,
+          notify: true
+        }
+      },
+
+      _sortDates: function (a, b) {
+        return b.DATESCHEDULED - a.DATESCHEDULED;
+      },
+
+      typeOfDocket: function(type){
+        switch (type) {
+          case "CT":
+                return "Criminal Trial";
+                break;
+          case "CA":
+                return "Criminal Arraignment";
+                break;
+          case "DA":
+                return "DWI Arraignment";
+                break;
+          case "TA":
+                return "Traffic Arraignment";
+                break;
+          case "JC":
+                return "Jail Clearance";
+                break;
+          case "TP":
+              return "To Pay";
+              break;
+          default:
+                return type;
+                break;
+        }
+      },
+
+    });
+  })();
+  </script>
+</dom-module>
